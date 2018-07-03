@@ -28,6 +28,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s.h"
 #include "stm8s_it.h"    /* SDCC patch: required by SDCC for interrupts */
+#include "SSD1306.h"
 
 /**
   * @addtogroup GPIO_Toggle
@@ -37,9 +38,6 @@
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Evalboard I/Os configuration */
-
-#define LED_GPIO_PORT  (GPIOD)
-#define LED_GPIO_PINS  (GPIO_PIN_3 | GPIO_PIN_2 | GPIO_PIN_1 | GPIO_PIN_0)
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -56,15 +54,13 @@ void Delay (uint16_t nCount);
   */
 void main(void)
 {
-
-  /* Initialize I/Os in Output Mode */
-  GPIO_Init(LED_GPIO_PORT, (GPIO_Pin_TypeDef)LED_GPIO_PINS, GPIO_MODE_OUT_PP_LOW_FAST);
+  LCD_Init();
+  LCD_Clear();
 
   while (1)
   {
     /* Toggles LEDs */
-    GPIO_WriteReverse(LED_GPIO_PORT, (GPIO_Pin_TypeDef)LED_GPIO_PINS);
-    Delay(0xFFFF);
+
   }
 
 }

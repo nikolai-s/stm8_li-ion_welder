@@ -15,6 +15,7 @@
 
 # STM8 device (for supported devices see stm8s.h)
 DEVICE=STM8S003
+DEVICE_FLASH=stm8s103f3
 
 # set compiler path & parameters 
 CC_ROOT =
@@ -32,6 +33,8 @@ PRJ_INC_DIR = $(PRJ_ROOT)
 PRJ_SOURCE  = $(notdir $(wildcard $(PRJ_SRC_DIR)/*.c))
 PRJ_OBJECTS := $(addprefix $(OUTPUT_DIR)/, $(PRJ_SOURCE:.c=.rel))
 
+LIB_INC_DIR = /usr/share/sdcc/include/
+
 # set SPL paths
 SPL_ROOT    = STM8-SPL-SDCC
 SPL_MAKE_DIR = $(SPL_ROOT)/Libraries/STM8S_StdPeriph_Driver
@@ -41,7 +44,7 @@ SPL_LIB = spl.lib
 
 
 # collect all include folders
-INCLUDE = -I$(PRJ_SRC_DIR) -I$(SPL_INC_DIR)
+INCLUDE = -I$(PRJ_SRC_DIR) -I$(SPL_INC_DIR) -I$(LIB_INC_DIR)
 
 # collect all source directories
 VPATH=$(PRJ_SRC_DIR):$(SPL_SRC_DIR)
@@ -68,3 +71,6 @@ $(TARGET): $(PRJ_OBJECTS) $(SPL_LIB)
 clean: 
 	rm -fr $(OUTPUT_DIR)
 	$(MAKE) -C $(SPL_MAKE_DIR) clean
+
+flash: $(TARGET)
+	stm8flash -c stlinkv2 -p $(DEVICE_FLASH) -s flash -w $(TARGET)
