@@ -279,10 +279,16 @@ INTERRUPT_HANDLER(TIM1_CAP_COM_IRQHandler, 12)
   * @retval None
   */
  INTERRUPT_HANDLER(TIM2_CAP_COM_IRQHandler, 14)
-{
-  /* In order to detect unexpected events during development,
-     it is recommended to set a breakpoint on the following instruction.
-  */
+{  
+	if (TIM2_GetITStatus(TIM2_IT_CC2) != RESET)
+  {
+    /* Clear TIM2 Capture Compare2 interrupt pending bit*/
+    TIM2_ClearITPendingBit(TIM2_IT_CC2);
+  
+    /* PG.6 toggles after 500 ms */
+    GPIO_WriteReverse(GPIOD, GPIO_PIN_2);
+  }
+
 }
 #endif /*STM8S903*/
 

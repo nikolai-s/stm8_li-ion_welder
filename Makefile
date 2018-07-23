@@ -14,7 +14,7 @@
 #######
 
 # STM8 device (for supported devices see stm8s.h)
-DEVICE=STM8S003
+DEVICE=STM8S103
 DEVICE_FLASH=stm8s103f3
 
 # set compiler path & parameters 
