@@ -144,9 +144,10 @@ INTERRUPT_HANDLER(EXTI_PORTC_IRQHandler, 5)
   */
 INTERRUPT_HANDLER(EXTI_PORTD_IRQHandler, 6)
 {
-  /* In order to detect unexpected events during development,
-     it is recommended to set a breakpoint on the following instruction.
-  */
+  if ((GPIO_ReadInputData(GPIOD) & GPIO_PIN_1) == 0x00)
+  {
+    Start_Welding();
+  }
 }
 
 /**
@@ -268,11 +269,12 @@ INTERRUPT_HANDLER(TIM1_CAP_COM_IRQHandler, 12)
   */
  INTERRUPT_HANDLER(TIM2_UPD_OVF_BRK_IRQHandler, 13)
 {
-  // if (TIM2_GetITStatus(TIM2_IT_UPDATE) != RESET)
-  // {
-  //   /* Clear TIM2 Capture Compare2 interrupt pending bit*/
-  //   TIM2_ClearITPendingBit(TIM2_IT_UPDATE);
-  // }
+  if (TIM2_GetITStatus(TIM2_IT_UPDATE) != RESET)
+  {
+    /* Clear TIM2 Capture Compare2 interrupt pending bit*/
+    TIM2_ClearITPendingBit(TIM2_IT_UPDATE);
+    Update_timer();
+  }
 }
 
 /**
@@ -282,16 +284,18 @@ INTERRUPT_HANDLER(TIM1_CAP_COM_IRQHandler, 12)
   */
  INTERRUPT_HANDLER(TIM2_CAP_COM_IRQHandler, 14)
 {  
-	if (TIM2_GetITStatus(TIM2_IT_CC1) != RESET)
-  {
-    /* Clear TIM2 Capture Compare2 interrupt pending bit*/
-    TIM2_ClearITPendingBit(TIM2_IT_CC1);
-  }
-  if (TIM2_GetITStatus(TIM2_IT_CC2) != RESET)
-  {
-    /* Clear TIM2 Capture Compare2 interrupt pending bit*/
-    TIM2_ClearITPendingBit(TIM2_IT_CC2);
-  }
+	// if (TIM2_GetITStatus(TIM2_IT_CC1) != RESET)
+  // {
+  //   /* Clear TIM2 Capture Compare2 interrupt pending bit*/
+  //   TIM2_ClearITPendingBit(TIM2_IT_CC1);
+
+  //   Update_timer();
+  // }
+  // if (TIM2_GetITStatus(TIM2_IT_CC2) != RESET)
+  // {
+  //   /* Clear TIM2 Capture Compare2 interrupt pending bit*/
+  //   TIM2_ClearITPendingBit(TIM2_IT_CC2);
+  // }
 
 }
 #endif /*STM8S903*/
