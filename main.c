@@ -42,20 +42,24 @@ void main(void)
 
 
   TIM1_DeInit();
-  TIM1_TimeBaseInit(0, TIM1_COUNTERMODE_UP, 1000, 1);
+  TIM1_TimeBaseInit(0, TIM1_COUNTERMODE_UP, 395, 1);
   TIM1_EncoderInterfaceConfig(TIM1_ENCODERMODE_TI12, TIM1_ICPOLARITY_RISING, TIM1_ICPOLARITY_RISING);
   TIM1_Cmd(ENABLE);
 
   TIM2_Config();
 
   LCD_Init();
+  LCD_Time_Init();
+  LCD_Set_Time(57);
   LCD_Update();
-  // enableInterrupts();
+  enableInterrupts();
 
 
   while (1)
   {
-    Delay(0x0FFF);
+    Delay(0x1FFF);
+    LCD_Set_Time(TIM1_GetCounter()/4+1);
+    LCD_Update();
     TIM2_SetCompare1(TIM1_GetCounter());
   }
 
@@ -77,7 +81,7 @@ static void GPIO_Config(void)
   */
 static void TIM2_Config(void)
 {
-  TIM2_TimeBaseInit(TIM2_PRESCALER_512, 1020);
+  TIM2_TimeBaseInit(TIM2_PRESCALER_512, 410);
 
   TIM2_PrescalerConfig(TIM2_PRESCALER_512, TIM2_PSCRELOADMODE_IMMEDIATE);
 
