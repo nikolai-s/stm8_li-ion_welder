@@ -1,6 +1,7 @@
 #include "stm8s.h"
 
 uint8_t lcd_buff[256];
+uint8_t manual_welding = 0;
 
 const uint8_t manual[256] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -161,26 +162,40 @@ void LCD_Update(void)
   while (!I2C_CheckEvent(I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED));
   I2C_SendData(0x40);
   while (!I2C_CheckEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING));
-  for(ix=0;ix<256;ix++)
+
+  // manual or automatic text render on screen
+  if (manual_welding)
   {
-     I2C_SendData(manual[ix]);
-     while (!I2C_CheckEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING));
+    for(ix=0;ix<256;ix++)
+    {
+      I2C_SendData(manual[ix]);
+      while (!I2C_CheckEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING));
+    }
   }
-  for(ix=0;ix<256;ix++)
+  else
   {
-     I2C_SendData(automatic[ix]);
-     while (!I2C_CheckEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING));
+    for(ix=0;ix<256;ix++)
+    {
+      I2C_SendData(automatic[ix]);
+      while (!I2C_CheckEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING));
+    }
   }
+
+  // welding text render
   for(ix=0;ix<128;ix++)
   {
      I2C_SendData(welding_text[ix]);
      while (!I2C_CheckEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING));
   }
-  for(ix=0;ix<128;ix++)
+
+  // empty lines render
+  for(ix=0;ix<384;ix++)
   {
      I2C_SendData(0x00);
      while (!I2C_CheckEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING));
   }
+
+  //welding time render
   for(ix=0;ix<256;ix++)
   {
      I2C_SendData(lcd_buff[ix]);
@@ -195,6 +210,17 @@ void LCD_Time_Init(void)
   for(ix=0;ix<256;ix++)
   {
     lcd_buff[ix]=time[ix];
+  }
+}
+
+void LCD_Set_Manual(uint8_t param)
+{
+  if (param) {
+    manual_welding = 1;
+  }
+  else
+  {
+    manual_welding = 0;
   }
 }
 

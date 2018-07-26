@@ -144,9 +144,17 @@ INTERRUPT_HANDLER(EXTI_PORTC_IRQHandler, 5)
   */
 INTERRUPT_HANDLER(EXTI_PORTD_IRQHandler, 6)
 {
-  if ((GPIO_ReadInputData(GPIOD) & GPIO_PIN_1) == 0x00)
+  if (!GPIO_ReadInputPin(GPIOD, GPIO_PIN_1))
   {
     Start_Welding();
+  }
+  if (GPIO_ReadInputPin(GPIOD, GPIO_PIN_1))
+  {
+    Stop_Welding();
+  }
+  if (!GPIO_ReadInputPin(GPIOD, GPIO_PIN_2))
+  {
+    Toggle_Welding_Mode();
   }
 }
 
